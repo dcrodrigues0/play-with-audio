@@ -1,39 +1,23 @@
 package handler
-
 import (
-	"bufio"
-	"fmt"
-	"os"
 	"strings"
-	"context"
-	"play-with-audio/internal/port"	
+	"os"
+	"fmt"
+	"play-with-audio/internal/service"
+	"play-with-audio/internal/utils"
 )
 
 func CaptureAudio() {
 	userWantsAudioRec()
-	audioRec()
+	service.AudioRec()
 }
 
 func userWantsAudioRec() {
-	fmt.Println("Should i record audio? yes/no")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	userInput := scanner.Text()
-	
+	userInput := utils.AskInput("Start audio record? yes/no")
+
 	if strings.ToLower(strings.TrimSpace(userInput)) != "yes" {
 		fmt.Println("Closing app...")
 		os.Exit(0)
 	}
-}
-
-func audioRec(){
-	ctx := context.Background()	
-	ctx, cancel := context.WithCancel(ctx)
-	fmt.Println("Press enter to stop recording...")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	scanner.Text()
-	port.RecordAudio(ctx)	
-	defer cancel()
 }
 
