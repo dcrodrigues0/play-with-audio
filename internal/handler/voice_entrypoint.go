@@ -5,20 +5,35 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"context"
+	"play-with-audio/internal/port"	
 )
 
 func CaptureAudio() {
-	userWantsAudioCap()
-	//TODO Implement a way to capture audio bits, idk how but i'll discover
+	userWantsAudioRec()
+	audioRec()
 }
 
-func userWantsAudioCap() {
-	fmt.Println("Should i capture audio? yes/no")
+func userWantsAudioRec() {
+	fmt.Println("Should i record audio? yes/no")
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	userInput := scanner.Text()
+	
 	if strings.ToLower(strings.TrimSpace(userInput)) != "yes" {
 		fmt.Println("Closing app...")
 		os.Exit(0)
 	}
 }
+
+func audioRec(){
+	ctx := context.Background()	
+	ctx, cancel := context.WithCancel(ctx)
+	fmt.Println("Press enter to stop recording...")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	scanner.Text()
+	port.RecordAudio(ctx)	
+	defer cancel()
+}
+
