@@ -32,7 +32,8 @@ func ImproveAudio(){
 	cmd := exec.Command("ffmpeg",
     "-i", "output.wav",
     "-af", "highpass=f=100, lowpass=f=3000, afftdn=nf=-25, loudnorm",
- 		"clean.wav",
+ 		"-y",
+		"clean.wav",
 	)
 	
 	cmd.Stdout = os.Stdout
@@ -43,6 +44,17 @@ func ImproveAudio(){
 		fmt.Println("Audio improvement err:",err)
 	}
 }
+
+func GetAvailableMics(){
+	//TODO Implement a way to list available mics
+	cmd := exec.Command("arecord","-l")
+	err := cmd.Run()
+	if err != nil{
+		fmt.Println("Audio improvement err:",err)
+	}
+}
+
+
 
 
 

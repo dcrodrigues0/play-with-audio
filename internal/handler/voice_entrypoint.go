@@ -14,7 +14,7 @@ func CaptureAudio() {
 
 func userWantsAudioRec() {
 	userInput := utils.AskInput("Start audio record? yes/no")
-
+	
 	if strings.ToLower(strings.TrimSpace(userInput)) != "yes" {
 		fmt.Println("Closing app...")
 		os.Exit(0)

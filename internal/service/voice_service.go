@@ -9,7 +9,7 @@ import (
 func AudioRec(){
 	ctx := context.Background()	
 	ctx, cancel := context.WithCancel(ctx)
-
+	port.GetAvailableMics() //Testing
 	go func() {
 		utils.AskInput("Press enter to stop recording")
 		cancel()
