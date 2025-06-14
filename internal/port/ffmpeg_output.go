@@ -6,13 +6,13 @@ import (
 	"os"
 	"os/exec"
 	"bytes"
-	"play-with-audio/internal/models"
 )
 
-func RecordAudio(ctx context.Context){
+func RecordAudio(ctx context.Context, mic int){
+	fmt.Println(mic)
 	cmd := exec.CommandContext(ctx, "ffmpeg",
     "-f", "alsa",
-    "-i", "default",
+		"-i", fmt.Sprintf("hw:%d,0",mic),
     "-ar", "48000",            // Set sample rate
     "-ac", "2",                // Stereo
     "-sample_fmt", "s16",      // Sample format: 16-bit signed integer
@@ -47,7 +47,7 @@ func ImproveAudio(){
 	}
 }
 
-func GetAvailableMics(){
+func GetAvailableMics() []string {
 	output, err := exec.Command("arecord","-l").Output()
 	
 	if err != nil{
@@ -55,15 +55,16 @@ func GetAvailableMics(){
 	}
 
 	rawList := bytes.Split(output, []byte("\n"))
-	var micList []Arecord
+	var micList []string
+	micLines := 0
 	for _,line := range rawList{
 		if bytes.Contains(line,[]byte("card")){
-			//TODO Rescue card id, device name and type from arecord -l
-			micList = append(models.NewArecord(), line)	
-		}	
+			micList = append(micList, string(line) + "\n")
+			micLines++
+		}
 	}
-
-	fmt.Println(string(micList[0]) + "\n" + string(micList[1]))
+	
+	return micList
 }
 
 
