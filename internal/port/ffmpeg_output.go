@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"bytes"
+	"play-with-audio/internal/models"
 )
 
 func RecordAudio(ctx context.Context){
@@ -46,13 +48,25 @@ func ImproveAudio(){
 }
 
 func GetAvailableMics(){
-	//TODO Implement a way to list available mics
-	cmd := exec.Command("arecord","-l")
-	err := cmd.Run()
+	output, err := exec.Command("arecord","-l").Output()
+	
 	if err != nil{
-		fmt.Println("Audio improvement err:",err)
+		fmt.Println("Could not get available mic list: ",err)
 	}
+
+	rawList := bytes.Split(output, []byte("\n"))
+	var micList []Arecord
+	for _,line := range rawList{
+		if bytes.Contains(line,[]byte("card")){
+			//TODO Rescue card id, device name and type from arecord -l
+			micList = append(models.NewArecord(), line)	
+		}	
+	}
+
+	fmt.Println(string(micList[0]) + "\n" + string(micList[1]))
 }
+
+
 
 
 
